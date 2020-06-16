@@ -67,10 +67,10 @@ export function AllRecipes() {
                     })}
                 </tbody>
             </table>
+            <button onClick={fetchAllRecipes} id="btn">Press to fetch all recipies again!</button>
             {editRecipe.id && (
                 <EditRecipe setEditedRecipe={setEditedRecipe} editRecipe={editRecipe} />
             )}
-            <button onClick={fetchAllRecipes} id="btn">Press to fetch all recipies again!</button>
         </div>
     );
 }
