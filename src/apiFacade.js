@@ -82,6 +82,23 @@ function apiFacade() {
       });
   };
 
+  const editRecipe = (body) => {
+    let options = makeOptions("PUT", true, body);
+    fetch(URL + "/api/rec/edit", options)
+      .then(handleHttpErrors)
+      .then((data) => {
+        console.log(data);
+      });
+  };
+
+  const deleteRecipe = (id, fetchURL, setRecipeList) => {
+    let deleteURL = isAdmin() ? "/api/rec/" : "";
+    let options = makeOptions("DELETE", true);
+    fetch(URL + deleteURL + id, options)
+      .then(console.log("Deletion completed on recipe with ID: " + id))
+      .then(setTimeout(() => fetchAllRecipes(fetchURL, setRecipeList), 1000));
+  };
+
   return {
     makeOptions,
     setToken,
@@ -93,7 +110,9 @@ function apiFacade() {
     fetchAdminData,
     isAdmin,
     isUser,
-    fetchAllRecipes
+    fetchAllRecipes,
+    editRecipe,
+    deleteRecipe
   }
 }
 const facade = apiFacade();
