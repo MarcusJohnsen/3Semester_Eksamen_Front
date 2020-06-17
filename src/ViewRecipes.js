@@ -3,6 +3,8 @@ import facade from "./apiFacade";
 
 export function AllRecipes() {
     const [allRecipes, setRecipes] = useState([]);
+    const [update, setUpdate] = useState(false);
+    const [search, setSearch] = useState();
     const [editRecipe, setEditedRecipe] = useState({});
 
     useEffect(() => {
@@ -11,6 +13,10 @@ export function AllRecipes() {
 
     function fetchAllRecipes() {
         facade.fetchAllRecipes("/api/rec/all", setRecipes);
+    }
+
+    function fetchRecipeByID() {
+        facade.fetchRecipeByID("/api/rec/allByID/", setRecipes);
     }
 
     const editRecipes = (id) => {
@@ -22,19 +28,61 @@ export function AllRecipes() {
         facade.deleteRecipe(id, URL, setRecipes);
     };
 
+    function sortByNewest() {
+        let sortedRecipesByID = allRecipes.sort((rec1, rec2) => {
+            return rec2.id - rec1.id;
+        });
+        setRecipes(sortedRecipesByID);
+        setUpdate(!update);
+    }
+
+    function sortByOldest() {
+        let sortedRecipesByID = allRecipes.sort((rec1, rec2) => {
+            return rec1.id - rec2.id;
+        });
+        setRecipes(sortedRecipesByID);
+        setUpdate(!update);
+    }
+
+    function addToWeeklyMenu(id) {
+        let recipe = allRecipes.filter((recipe) => recipe.id === id)[0];
+        facade.addFavoriteJoke(id);
+    }
+
+    function searchRecipes(event) {
+        facade.fetchAllRecipes("/api/rec/allByName/" + search, setRecipes);
+    }
+
+    function changeHandler(event) {
+        setSearch(event.target.value);
+    }
+
     return (
         <div>
             <h1>AllRecipes</h1>
             <hr />
+            <p>
+                Search for recipes by name:
+                <input type="text" placeholder="Search recipe on name"
+                    value={search} onChange={changeHandler}
+                />
+                <button onClick={searchRecipes}>search</button>
+            </p>
             <br />
             <br />
-            <table border="1" width="50%">
+            <button onClick={sortByNewest} id="sortNew">
+                Sort by Newest
+            </button>
+            <button onClick={sortByOldest} id="sortOld">
+                Sort by Oldest
+            </button>
+            <table border="1" width="100%">
                 <thead>
                     <tr>
                         <th width="50px">ID</th>
-                        <th width="50px">Name</th>
-                        <th width="50px">Prep time</th>
-                        <th width="150px">Directions</th>
+                        <th width="200px">Name</th>
+                        <th width="100px">Prep time</th>
+                        <th width="567px">Directions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,6 +99,10 @@ export function AllRecipes() {
                                     </td>
                                     <td align="center">
                                         <button onClick={() => deleteRecipe(recipe.id)} id="tableBtn">Delete Recipe</button>
+                                    </td>
+                                    <td align="center">
+                                        <button onClick={() => addToWeeklyMenu(recipe.id)}
+                                            id="weeklyBtn">Add to weekly menu</button>
                                     </td>
                                 </tr>
                             )

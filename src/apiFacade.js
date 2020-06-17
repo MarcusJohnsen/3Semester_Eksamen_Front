@@ -99,6 +99,35 @@ function apiFacade() {
       .then(setTimeout(() => fetchAllRecipes(fetchURL, setRecipeList), 1000));
   };
 
+  const fetchRecipeByID = (fetchURL, setRecipeList) => {
+    let options = makeOptions("GET", true);
+    fetch(URL + fetchURL, options)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        data.recipeList ? setRecipeList(data.recipeList) : setRecipeList([]);
+      });
+  };
+
+  const fetchRecipesByName = (fetchURL, setRecipeList) => {
+    let options = makeOptions("GET", true);
+    fetch(URL + fetchURL, options)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        data.recipeList ? setRecipeList(data.recipeList) : setRecipeList([]);
+      });
+  };
+
+  const addRecipeToWeeklyMenu = (id) => {
+    let option = facade.makeOptions("PUT", true);
+    fetch(settingUrl.addRecipe() + "/" + id, option)
+      .then(handleHttpErrors)
+      .then((data) => {
+        console.log(data);
+      });
+  }
+
   return {
     makeOptions,
     setToken,
@@ -112,7 +141,8 @@ function apiFacade() {
     isUser,
     fetchAllRecipes,
     editRecipe,
-    deleteRecipe
+    deleteRecipe,
+    addRecipeToWeeklyMenu
   }
 }
 const facade = apiFacade();
